@@ -1,7 +1,7 @@
 {
-  "name": "magento-openapi-transpiler",
+  "name": "magento-openapi-schema-transformer",
   "version": "1.0.0",
-  "description": "A tool for transpiling the Magento 2 swagger schema into ReDoc-friendly format",
+  "description": "A tool for transforming the Magento 2 swagger schema into ReDoc-friendly format",
   "main": "index.js",
   "scripts": {
     "test": "jest"

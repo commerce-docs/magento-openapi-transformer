@@ -1,6 +1,6 @@
-const transpiler = require('../transpiler')
+const Transformer = require('../Transformer')
 
-test('Transpile JSON',() => {
+test('Transform JSON',() => {
     const config = {};
     const json = {
         "hello": "world",
@@ -107,7 +107,7 @@ test('Transpile JSON',() => {
         ]
     };
 
-    const received = transpiler.run(config,JSON.stringify(json));
+    const received = Transformer.run(config,JSON.stringify(json));
 
     expect(received).toBe(JSON.stringify(expected)); 
 });
