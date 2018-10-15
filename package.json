@@ -1,0 +1,11 @@
+{
+  "name": "magento-openapi-transpiler",
+  "version": "1.0.0",
+  "description": "A tool for transpiling the Magento 2 swagger schema into ReDoc-friendly format",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "James Calcaben (calcaben@adobe.com)",
+  "license": "UNLICENSED"
+}
