@@ -46,10 +46,11 @@ test('Transform JSON',() => {
         "hello": "world", 
         "foo": "bar",
         "tags": [
-            {"name": "tag1"},
-            {"name": "tag2"},
-            {"name": "tag4"},
-            {"name": "tag6"}
+            {"name": "path1/a"},
+            {"name": "path2"},
+            {"name": "path3/a"},
+            {"name": "path4/c"},
+            {"name": "path4/d"}
         ],
         "paths": {
             "/V1/path1/a": {
