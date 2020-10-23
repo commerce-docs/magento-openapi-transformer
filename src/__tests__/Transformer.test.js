@@ -1,7 +1,6 @@
 const Transformer = require('../Transformer')
 
 test('Transform JSON',() => {
-    const config = {};
     const json = {
         "hello": "world",
         "foo": "bar",
@@ -108,7 +107,7 @@ test('Transform JSON',() => {
         ]
     };
 
-    const received = Transformer.run(config,JSON.stringify(json));
+    const received = Transformer.run(JSON.stringify(json));
 
     expect(received).toBe(JSON.stringify(expected)); 
 });

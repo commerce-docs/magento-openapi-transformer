@@ -1,6 +1,5 @@
 const Transformer = require("./src/Transformer");
 const fs = require("fs");
-const config = require("./_config");
 
 const commandLineArgs = require("command-line-args");
 const { emitWarning } = require("process");
@@ -33,7 +32,7 @@ fs.readFile(infile, "utf8", (err, data) => {
 
   var json = data.toString();
 
-  const result = Transformer.run(config, json);
+  const result = Transformer.run(json);
 
   if (outfile) {
     fs.writeFile(outfile, result, (err) => {

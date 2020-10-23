@@ -10,7 +10,7 @@ function tagCompare(a,b){
 
 module.exports = {
 
-    run: (config,json) => {
+    run: (json) => {
         var result = JSON.parse(json);
 
         result.paths = SummaryGenerator.generate(Updater.update(Sorter.sort(result.paths))); 
