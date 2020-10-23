@@ -35,8 +35,16 @@ fs.readFile(infile, "utf8", (err, data) => {
 
   const result = Transformer.run(config, json);
 
-  if (!outfile) {
-    emitWarning("outfile argument --outfile or -o not specified, writing output to console");
+  if (outfile) {
+    fs.writeFile(outfile, result, (err) => {
+      if (err) {
+        throw err;
+      }
+    });
+  } else {
+    emitWarning(
+      "outfile argument --outfile or -o not specified, writing output to console"
+    );
     console.log(result);
   }
 });
