@@ -1,16 +1,42 @@
-const Transformer = require('./src/Transformer');
-const fs = require('fs');
-const config = require('./_config');
+const Transformer = require("./src/Transformer");
+const fs = require("fs");
+const config = require("./_config");
 
+const commandLineArgs = require("command-line-args");
+const { emitWarning } = require("process");
 
-fs.readFile(config.infile, "utf8", (err,data)=>{
-    if(err){
-        throw err;
-    }
+const optionDefinitions = [
+  {
+    name: "infile",
+    alias: "i",
+    type: String,
+  },
+  {
+    name: "outfile",
+    alias: "o",
+    type: String,
+  },
+];
 
-    var json = data.toString();
+const options = commandLineArgs(optionDefinitions);
 
-    const result = Transformer.run(config, json);
+const { infile, outfile } = options;
 
+if (!infile) {
+  throw new Error("Input file argument --infile or -i not specified");
+}
+
+fs.readFile(infile, "utf8", (err, data) => {
+  if (err) {
+    throw err;
+  }
+
+  var json = data.toString();
+
+  const result = Transformer.run(config, json);
+
+  if (!outfile) {
+    emitWarning("outfile argument --outfile or -o not specified, writing output to console");
     console.log(result);
+  }
 });
