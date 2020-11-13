@@ -52,7 +52,7 @@ curl --header "Authorization: Bearer ${CUSTOMER_TOKEN//\"}" http://127.0.0.1/res
 
 yarn install
 
-yarn start -i .__output__/guest-schema-original.json -o __output__/guest-schema-transformed.json
+yarn start -i __output__/guest-schema-original.json -o __output__/guest-schema-transformed.json
 
 yarn start -i __output__/admin-schema-original.json -o __output__/admin-schema-transformed.json
 
