@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-
+source bin/functions.sh
 # Assign HOST to a first argument. Use 'http://127.0.0.1' if an argument is absent.
 HOST=${1:-'http://127.0.0.1'}
 
@@ -50,10 +50,6 @@ curl --header "Authorization: Bearer ${CUSTOMER_TOKEN//\"}" ${HOST}/rest/default
 # # Check exceptions
 # cat /var/www/html/magento2/var/log/exception.log
 
-yarn install
-
-yarn start -i .__output__/guest-schema-original.json -o __output__/guest-schema-transformed.json
-
-yarn start -i __output__/admin-schema-original.json -o __output__/admin-schema-transformed.json
-
-yarn start -i __output__/customer-schema-original.json -o __output__/customer-schema-transformed.json
+echo 'Post-processing'
+transform
+edit
