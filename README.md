@@ -25,8 +25,8 @@ yarn start -i /path/to/schema/file -o /path/to/output/file
 
 ## Get all and transform
 
-You can all three original schemas and transform them in one run.
-Make sure the Magento app is running.
+You can get all three original schemas and transform them in one run.
+Just make sure the Magento app is running.
 If your host is not `https://127.0.0.1`, add it as an argument.
 
 For Magento 2.4 running on 'https://127.0.0.1':
@@ -35,10 +35,10 @@ For Magento 2.4 running on 'https://127.0.0.1':
 bin/get-rest-schemas-from-2_4
 ```
 
-For Magento 2.4 running on a remote host 'https://magento2.docker':
+For Magento 2.4 running on a different host 'https://magento2.docker.remote.host.com':
 
 ```bash
-bin/get-rest-schemas-from-2_4 https://magento2.docker
+bin/get-rest-schemas-from-2_4 https://magento2.docker.remote.host.com
 ```
 
 For Magento 2.3:
