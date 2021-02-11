@@ -23,7 +23,7 @@ yarn start -i /path/to/schema/file -o /path/to/output/file
 
 **NOTE:** *If the outfile is not specified, the script will emit a warning and write to the console.*
 
-## Get all and transform
+## Get all, transform, and process
 
 You can get all three original schemas and transform them in one run.
 Just make sure the Magento app is running.
@@ -47,7 +47,8 @@ For Magento 2.3:
 bin/get-rest-schemas-from-2_4 [host]
 ```
 
-Find generated original and transformed schemas in the `__output__` directory.
+Find the generated, transformed, and processed schemas in the `__output__` directory.
+Use the `processed` schemas on Redocly.
 
 ## Running tests
 
