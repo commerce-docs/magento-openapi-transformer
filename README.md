@@ -48,7 +48,8 @@ bin/get-rest-schemas-from-2_4 [host]
 ```
 
 Find the generated, transformed, and processed schemas in the `__output__` directory.
-Use the `processed` schemas on Redocly.
+
+__Use the `processed` schemas on Redocly.__
 
 ## Running tests
 
