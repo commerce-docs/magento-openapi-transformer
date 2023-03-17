@@ -8,22 +8,7 @@ A tool that cleans up and updates a Magento REST schema to improve readability w
 yarn install
 ```
 
-## Run the script
-
-```sh
-yarn start -i /path/to/schema/file -o /path/to/output/file
-```
-
-## CLI options
-
-| Name        | Alias | Description                  |
-| ----------- | ----- | ---------------------------- |
-| `--infile`  | `-i`  | Filepath to the schema file  |
-| `--outfile` | `-o`  | Filepath to write the output |
-
-**NOTE:** *If the outfile is not specified, the script will emit a warning and write to the console.*
-
-## Get all, transform, and process
+## Get the schemas, transform, and process
 
 You can get all three original schemas and transform them in one run.
 Just make sure the Magento app is running.
