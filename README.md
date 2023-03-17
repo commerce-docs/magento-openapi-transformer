@@ -1,6 +1,6 @@
 # Magento REST schema transformer
 
-A tool that cleans up and updates a Magento REST schema to improve readability when used by ReDoc.
+A toolkit that gets, cleans up, updates, and converts a Magento REST schema for the use by Redoc.
 
 ## Install dependencies
 
@@ -26,15 +26,9 @@ For Magento 2.4 running on a different host 'https://magento2.docker.remote.host
 bin/get-rest-schemas-from-2_4 https://magento2.docker.remote.host.com
 ```
 
-For Magento 2.3:
-
-```bash
-bin/get-rest-schemas-from-2_4 [host]
-```
-
 Find the generated, transformed, and processed schemas in the `__output__` directory.
 
-__Use the `processed` schemas on Redocly.__
+__Use the `redocly` schemas on Redocly.__
 
 ## Running tests
 
