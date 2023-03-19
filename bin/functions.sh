@@ -1,9 +1,9 @@
 #!/bin/sh
 
 convert () {
-  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/admin-schema-processed-$VERSION.json > __output__/admin-schema-redocly-$VERSION.json
-  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/customer-schema-processed-$VERSION.json > __output__/admin-schema-redocly-$VERSION.json
-  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/guest-schema-processed-$VERSION.json > __output__/admin-schema-redocly-$VERSION.json
+  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/admin-schema-processed-$VERSION.json > __output__/admin-schema-redocly-$VERSION.yaml
+  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/customer-schema-processed-$VERSION.json > __output__/customer-schema-redocly-$VERSION.yaml
+  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/guest-schema-processed-$VERSION.json > __output__/guest-schema-redocly-$VERSION.yaml
 }
 
 edit () {
