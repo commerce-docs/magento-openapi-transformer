@@ -1,0 +1,61 @@
+#!/bin/bash
+set -e
+
+source bin/functions.sh
+
+source .env
+
+#############################
+# This script gets REST shemas for guest, admin, and customer from a running local Commerce app
+# 
+# Use Google Authenticator to pass two-factor authentication.
+##############################
+
+mkdir -p __output__/artifacts
+
+############################
+# Get REST schema as Admin #
+############################
+
+echo "Getting REST schema as Admin"
+
+# Get OTP
+read -p 'Enter code from the Google Authenticator app: ' OTP
+
+# Get Admin token
+ADMIN_TOKEN=$(curl --data "{\"username\": \"$ADMIN_USERNAME\", \"password\": \"$ADMIN_PASSWORD\", \"otp\":\"$OTP\"}" --header 'Content-Type: application/json' "$STORE_URL"/rest/default/V1/tfa/provider/google/authenticate)
+
+# Send a GET request and write schema to a file. Remove double quotes in ADMIN_TOKEN.
+curl --header "Authorization: Bearer ${ADMIN_TOKEN//\"}" "$STORE_URL"/rest/default/schema > __output__/artifacts/admin-schema-original.json
+
+###############################
+# Get REST schema as Customer #
+###############################
+
+echo "Getting REST schema as Customer"
+
+# Create a customer
+curl --request POST --data @bin/customer.json --header 'Content-Type: application/json' "$STORE_URL"/rest/default/V1/customers
+
+# Get the customer's token
+CUSTOMER_TOKEN=$(curl --data '{"username": "jdoe@example.com", "password": "Password1"}' --header 'Content-Type: application/json' "$STORE_URL"/rest/default/V1/integration/customer/token)
+
+# Send a GET request and write schema to a file. Remove double quotes in CUSTOMER_TOKEN.
+curl --header "Authorization: Bearer ${CUSTOMER_TOKEN//\"}" "$STORE_URL"/rest/default/schema > __output__/artifacts/customer-schema-original.json
+
+############################
+# Get REST schema as Guest #
+############################
+
+echo "Getting REST schema as Guest"
+
+# Send a GET request and write schema to a file
+curl "$STORE_URL"/rest/default/schema > __output__/artifacts/guest-schema-original.json
+
+# # Check exceptions
+# cat /var/www/html/commerce/var/log/exception.log
+
+echo 'Post-processing'
+transform
+edit
+convert
