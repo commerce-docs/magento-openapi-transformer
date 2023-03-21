@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+
 source bin/functions.sh
 #############################
 # This script gets REST shemas for guest, admin, and customer from a running local Magento instance (http://${HOST}/)
@@ -25,10 +26,10 @@ echo "Getting REST schema as Admin"
 read -p 'Enter code from the Google Authenticator app: ' OTP
 
 # Get Admin token
-ADMIN_TOKEN=$(curl --data "{\"username\": \"admin\", \"password\": \"123123q\", \"otp\":\"${OTP}\"}" --header 'Content-Type: application/json' http://${HOST}/rest/default/V1/tfa/provider/google/authenticate)
+ADMIN_TOKEN=$(curl --data "{\"username\": \"admin\", \"password\": \"123123q\", \"otp\":\"${OTP}\"}" --header 'Content-Type: application/json' http://"${HOST}"/rest/default/V1/tfa/provider/google/authenticate)
 
 # Send a GET request and write schema to a file. Remove double quotes in ADMIN_TOKEN.
-curl --header "Authorization: Bearer ${ADMIN_TOKEN//\"}" http://${HOST}/rest/default/schema > __output__/admin-schema-original.json
+curl --header "Authorization: Bearer ${ADMIN_TOKEN//\"}" http://"${HOST}"/rest/default/schema > __output__/admin-schema-original.json
 
 ###############################
 # Get REST schema as Customer #
@@ -37,13 +38,13 @@ curl --header "Authorization: Bearer ${ADMIN_TOKEN//\"}" http://${HOST}/rest/def
 echo "Getting REST schema as Customer"
 
 # Create a customer
-curl --request POST --data @bin/customer.json --header 'Content-Type: application/json' http://${HOST}/rest/default/V1/customers
+curl --request POST --data @bin/customer.json --header 'Content-Type: application/json' http://"${HOST}"/rest/default/V1/customers
 
 # Get the customer's token
-CUSTOMER_TOKEN=$(curl --data '{"username": "jdoe@example.com", "password": "Password1"}' --header 'Content-Type: application/json' http://${HOST}/rest/default/V1/integration/customer/token)
+CUSTOMER_TOKEN=$(curl --data '{"username": "jdoe@example.com", "password": "Password1"}' --header 'Content-Type: application/json' http://"${HOST}"/rest/default/V1/integration/customer/token)
 
 # Send a GET request and write schema to a file. Remove double quotes in CUSTOMER_TOKEN.
-curl --header "Authorization: Bearer ${CUSTOMER_TOKEN//\"}" http://${HOST}/rest/default/schema > __output__/customer-schema-original.json
+curl --header "Authorization: Bearer ${CUSTOMER_TOKEN//\"}" http://"${HOST}"/rest/default/schema > __output__/customer-schema-original.json
 
 ############################
 # Get REST schema as Guest #
@@ -52,7 +53,7 @@ curl --header "Authorization: Bearer ${CUSTOMER_TOKEN//\"}" http://${HOST}/rest/
 echo "Getting REST schema as Guest"
 
 # Send a GET request and write schema to a file
-curl http://${HOST}/rest/default/schema > __output__/guest-schema-original.json
+curl http://"${HOST}"/rest/default/schema > __output__/guest-schema-original.json
 
 # # Check exceptions
 # cat /var/www/html/magento2/var/log/exception.log
@@ -60,3 +61,4 @@ curl http://${HOST}/rest/default/schema > __output__/guest-schema-original.json
 echo 'Post-processing'
 transform
 edit
+convert
