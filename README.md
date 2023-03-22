@@ -1,6 +1,13 @@
-# Magento REST schema transformer
+# Adobe Commerce REST schema transformer
 
-A toolkit that gets, cleans up, updates, and converts a Magento REST schema for the use by Redoc.
+A toolkit that gets, cleans up, updates, and converts a Commerce's REST schema for Redoc.
+
+## Prerequisites
+
+1. [Ruby](https://www.ruby-lang.org/en/documentation/installation/)
+1. [Node.js](https://nodejs.org/en)
+1. [Yarn](https://www.npmjs.com/package/yarn)
+1. [jq](https://stedolan.github.io/jq/download/)
 
 ## Install dependencies
 
@@ -8,27 +15,28 @@ A toolkit that gets, cleans up, updates, and converts a Magento REST schema for 
 yarn install
 ```
 
-## Get the schemas, transform, and process
+## Configure variables
+
+Create a `.env` file:
+
+```sh
+cp .env.example .env
+```
+
+Set values for your running Commerce app in `.env`.
+
+## Get, transform, and process the schema
 
 You can get all three original schemas and transform them in one run.
 Just make sure the Magento app is running.
-If your host is not `https://127.0.0.1`, add it as an argument.
-
-For Magento 2.4 running on 'https://127.0.0.1':
 
 ```bash
-bin/get-rest-schemas-from-2_4
+bin/get-schemas-for-redoc
 ```
 
-For Magento 2.4 running on a different host 'https://magento2.docker.remote.host.com':
+> NOTE: Be ready to enter a 2FA code and a version of the running Adobe Commerce.
 
-```bash
-bin/get-rest-schemas-from-2_4 https://magento2.docker.remote.host.com
-```
-
-Find the generated, transformed, and processed schemas in the `__output__` directory.
-
-__Use the `redocly` schemas on Redocly.__
+Find the redoc-ready schemas at `__output__`. For debugging, use intermediate results in `__output__/artifacts`.
 
 ## Running tests
 

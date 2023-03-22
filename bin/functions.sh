@@ -1,9 +1,9 @@
 #!/bin/sh
 
 convert () {
-  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/admin-schema-processed-$VERSION.json > __output__/admin-schema-redocly-$VERSION.yaml
-  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/customer-schema-processed-$VERSION.json > __output__/customer-schema-redocly-$VERSION.yaml
-  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/guest-schema-processed-$VERSION.json > __output__/guest-schema-redocly-$VERSION.yaml
+  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/artifacts/admin-schema-processed.json > __output__/admin-schema-$VERSION.yaml
+  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/artifacts/customer-schema-processed.json > __output__/customer-schema-$VERSION.yaml
+  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/artifacts/guest-schema-processed.json > __output__/guest-schema-$VERSION.yaml
 }
 
 edit () {
@@ -11,13 +11,20 @@ edit () {
 
   echo 'Changing version'
 
-  read -p 'Enter your Magento version (ex, 2.4.3): ' VERSION
+  read -p 'Enter your Magento version (e.g, 2.4.6): ' VERSION
 
-  cat __output__/admin-schema-transformed.json | version=$VERSION ruby -rjson -e 's = JSON.load($stdin); s["info"]["version"]=ENV["version"]; s["info"]["title"]="Commerce Admin REST endpoints - All inclusive"; s["host"]="example.com"; puts JSON.generate s' > __output__/admin-schema-processed-$VERSION.json
-  cat __output__/customer-schema-transformed.json | version=$VERSION ruby -rjson -e 's = JSON.load($stdin); s["info"]["version"]=ENV["version"]; s["info"]["title"]="Commerce Customer REST endpoints - All inclusive"; s["host"]="example.com"; puts JSON.generate s' > __output__/customer-schema-processed-$VERSION.json
-  cat __output__/guest-schema-transformed.json | version=$VERSION ruby -rjson -e 's = JSON.load($stdin); s["info"]["version"]=ENV["version"]; s["info"]["title"]="Commerce Guest REST endpoints - All inclusive"; s["host"]="example.com"; puts JSON.generate s' > __output__/guest-schema-processed-$VERSION.json
+  version=$VERSION ruby -rjson -e 's = JSON.load($stdin); s["info"]["version"]=ENV["version"]; s["info"]["title"]="Commerce Admin REST endpoints - All inclusive"; s["host"]="example.com"; puts JSON.generate s' < __output__/artifacts/admin-schema-transformed.json > __output__/artifacts/admin-schema-processed.json
+  version=$VERSION ruby -rjson -e 's = JSON.load($stdin); s["info"]["version"]=ENV["version"]; s["info"]["title"]="Commerce Customer REST endpoints - All inclusive"; s["host"]="example.com"; puts JSON.generate s' < __output__/artifacts/customer-schema-transformed.json > __output__/artifacts/customer-schema-processed.json
+  version=$VERSION ruby -rjson -e 's = JSON.load($stdin); s["info"]["version"]=ENV["version"]; s["info"]["title"]="Commerce Guest REST endpoints - All inclusive"; s["host"]="example.com"; puts JSON.generate s' < __output__/artifacts/guest-schema-transformed.json > __output__/artifacts/guest-schema-processed.json
 
   echo 'Done'
+}
+
+get_customer_creds () {
+  CUSTOMER_PASSWORD="$(jq -r '.password' 'bin/customer.json')"
+  CUSTOMER_USERNAME="$(jq -r '.customer.email' "bin/customer.json")"
+  export CUSTOMER_PASSWORD
+  export CUSTOMER_USERNAME
 }
 
 transform () {
@@ -25,9 +32,9 @@ transform () {
 
   yarn install
 
-  yarn start -i __output__/guest-schema-original.json -o __output__/guest-schema-transformed.json
+  yarn start -i __output__/artifacts/guest-schema-original.json -o __output__/artifacts/guest-schema-transformed.json
 
-  yarn start -i __output__/admin-schema-original.json -o __output__/admin-schema-transformed.json
+  yarn start -i __output__/artifacts/admin-schema-original.json -o __output__/artifacts/admin-schema-transformed.json
 
-  yarn start -i __output__/customer-schema-original.json -o __output__/customer-schema-transformed.json
+  yarn start -i __output__/artifacts/customer-schema-original.json -o __output__/artifacts/customer-schema-transformed.json
 }
