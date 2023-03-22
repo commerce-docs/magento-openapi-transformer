@@ -5,6 +5,8 @@ source bin/functions.sh
 
 source .env
 
+get_customer_creds
+
 #############################
 # This script gets REST shemas for guest, admin, and customer from a running local Commerce app
 # 
@@ -38,7 +40,7 @@ echo "Getting REST schema as Customer"
 curl --request POST --data @bin/customer.json --header 'Content-Type: application/json' "$STORE_URL"/rest/default/V1/customers
 
 # Get the customer's token
-CUSTOMER_TOKEN=$(curl --data '{"username": "jdoe@example.com", "password": "Password1"}' --header 'Content-Type: application/json' "$STORE_URL"/rest/default/V1/integration/customer/token)
+CUSTOMER_TOKEN=$(curl --data "{\"username\": \"$CUSTOMER_USERNAME\", \"password\": \"$CUSTOMER_PASSWORD\"}" --header 'Content-Type: application/json' "$STORE_URL"/rest/default/V1/integration/customer/token)
 
 # Send a GET request and write schema to a file. Remove double quotes in CUSTOMER_TOKEN.
 curl --header "Authorization: Bearer ${CUSTOMER_TOKEN//\"}" "$STORE_URL"/rest/default/schema > __output__/artifacts/customer-schema-original.json

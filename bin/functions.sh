@@ -20,6 +20,13 @@ edit () {
   echo 'Done'
 }
 
+get_customer_creds () {
+  CUSTOMER_PASSWORD="$(jq -r '.password' 'bin/customer.json')"
+  CUSTOMER_USERNAME="$(jq -r '.customer.email' "bin/customer.json")"
+  export CUSTOMER_PASSWORD
+  export CUSTOMER_USERNAME
+}
+
 transform () {
   echo "Transfoming the schemas for Redocly"
 
