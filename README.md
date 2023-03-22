@@ -2,7 +2,7 @@
 
 A toolkit that gets, cleans up, updates, and converts a Commerce's REST schema for Redoc.
 
-## Pre-requisites
+## Prerequisites
 
 1. [Ruby](https://www.ruby-lang.org/en/documentation/installation/)
 1. [Node.js](https://nodejs.org/en)
