@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+source bin/functions.sh
+
+echo 'Checking if all required files exist...'
+files=(
+  "__output__/artifacts/admin-schema-original.json"
+  "__output__/artifacts/customer-schema-original.json"
+  "__output__/artifacts/guest-schema-original.json"
+)
+
+for file in "${files[@]}"; do
+  if [ ! -f "$file" ]; then
+    echo "ERROR: File $file does not exist. Exiting."
+    exit 1
+  fi
+done
+
+echo 'Processing the schemas...'
+transform
+edit
+convert

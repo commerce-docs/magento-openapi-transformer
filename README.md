@@ -38,6 +38,20 @@ bin/get-schemas-for-redoc
 
 Find the redoc-ready schemas at `__output__`. For debugging, use intermediate results in `__output__/artifacts`.
 
+### Only process the schema
+
+If you already have the  following schemas locally:
+
+- `__output__/artifacts/admin-schema-original.json`
+- `__output__/artifacts/customer-schema-original.json`
+- `__output__/artifacts/guest-schema-original.json`
+
+then you can process them with:
+
+```bash
+bin/process-schemas-for-redoc
+```
+
 ## Running tests
 
 This project uses [Jest][] for tests.
