@@ -40,7 +40,7 @@ Find the redoc-ready schemas at `__output__`. For debugging, use intermediate re
 
 ### Only process the schema
 
-If you already have the  following schemas locally:
+If you already have the following schemas locally:
 
 - `__output__/artifacts/admin-schema-original.json`
 - `__output__/artifacts/customer-schema-original.json`
