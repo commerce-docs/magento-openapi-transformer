@@ -1,6 +1,11 @@
 #!/bin/sh
 
 convert () {
+  if [ -z "$VERSION" ]; then
+    echo "ERROR: VERSION is not set. Exiting."
+    exit 1
+  fi
+
   ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/artifacts/admin-schema-edited.json > __output__/admin-schema-$VERSION.yaml
   ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/artifacts/customer-schema-edited.json > __output__/customer-schema-$VERSION.yaml
   ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/artifacts/guest-schema-edited.json > __output__/guest-schema-$VERSION.yaml

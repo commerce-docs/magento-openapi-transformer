@@ -54,10 +54,8 @@ echo "Getting REST schema as Guest"
 # Send a GET request and write schema to a file
 curl "$STORE_URL"/rest/default/schema > __output__/artifacts/guest-schema-original.json
 
-# # Check exceptions
+# # Check exceptions for debugging
 # cat /var/www/html/commerce/var/log/exception.log
 
-echo 'Post-processing'
-transform
-edit
-convert
+# Process the schemas
+bin/process-schemas-for-redoc
