@@ -1,6 +1,6 @@
 # Adobe Commerce REST schema transformer
 
-A toolkit that gets, cleans up, updates, and converts a Commerce's REST schema for Redoc.
+A toolkit that gets, cleans up, updates, and converts a Commerce REST schema for Redoc.
 
 ## Prerequisites
 
@@ -36,7 +36,7 @@ bin/get-schemas-for-redoc
 
 > NOTE: Be ready to enter a 2FA code and a version of the running Adobe Commerce.
 
-Find the redoc-ready schemas at `__output__`. For debugging, use intermediate results in `__output__/artifacts`.
+Find the redoc-ready schemas in the `__output__` folder. For debugging, use the intermediate files in `__output__/artifacts`.
 
 ### Only process the schema
 
@@ -51,6 +51,44 @@ then you can process them with:
 ```bash
 bin/process-schemas-for-redoc
 ```
+
+## Schema transformations
+
+The transformer applies several optimizations to make the OpenAPI schemas more suitable for Redoc documentation:
+
+### Optimization for Redoc
+
+- **Sorting**: All API paths are sorted alphabetically for consistent ordering.
+  See [PathSorter.test.js](src/__tests__/PathSorter.test.js).
+- **Summary generation**: Automatically generates endpoint summaries based on
+  their tags for better readability. See [SummaryGenerator.test.js](src/__tests__/SummaryGenerator.test.js).
+- **Tag generation**: Updates tags according to the endpoint path.
+  See [TagsUpdater.test.js](src/__tests__/TagsUpdater.test.js).
+- **Tag grouping**: Creates logical groups based on the second path segment
+  (e.g., all `/V1/customers/*` endpoints are grouped under "customers")
+  via Redoc-specific extensions `x-tagGroups` for improved navigation in Redoc.
+  See [TagGroupsGenerator.test.js](src/__tests__/TagGroupsGenerator.test.js).
+- **Tag management**: Consolidates and sorts all tags alphabetically.
+  See [TagsGenerator.test.js](src/__tests__/TagsGenerator.test.js).
+
+### Metadata updates
+
+- **Version information**: Updates the schema version to match your Commerce
+  installation.
+- **Title standardization**: Sets consistent titles for Admin, Customer, and
+  Guest API schemas.
+- **Host normalization**: Sets a placeholder host (`example.com`) for
+  documentation purposes.
+- **Introduction**: Adds a reference to shared documentation content in
+  `_includes/redocly-intro.md`.
+
+### Format conversion
+
+- **JSON to YAML**: Converts the final processed schemas from JSON to YAML
+  format for better readability and compatibility with documentation tools.
+
+The transformation process ensures that the generated schemas are optimized
+for documentation generation while maintaining full API compatibility.
 
 ## Running tests
 
