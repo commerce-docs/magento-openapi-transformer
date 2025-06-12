@@ -1,7 +1,6 @@
 # Adobe Commerce REST schema transformer
 
-A toolkit that gets, cleans up, updates, and converts a Commerce's REST 
-schema for Redoc.
+A toolkit that gets, cleans up, updates, and converts a Commerce REST schema for Redoc.
 
 ## Prerequisites
 
@@ -37,8 +36,7 @@ bin/get-schemas-for-redoc
 
 > NOTE: Be ready to enter a 2FA code and a version of the running Adobe Commerce.
 
-Find the redoc-ready schemas at `__output__`. For debugging, use intermediate 
-results in `__output__/artifacts`.
+Find the redoc-ready schemas in the `__output__` folder. For debugging, use the intermediate files in `__output__/artifacts`.
 
 ### Only process the schema
 
@@ -56,8 +54,7 @@ bin/process-schemas-for-redoc
 
 ## Schema transformations
 
-The transformer applies several optimizations to make the OpenAPI schemas
-more suitable for Redoc documentation:
+The transformer applies several optimizations to make the OpenAPI schemas more suitable for Redoc documentation:
 
 ### Optimization for Redoc
 
@@ -77,18 +74,18 @@ more suitable for Redoc documentation:
 ### Metadata updates
 
 - **Version information**: Updates the schema version to match your Commerce
-  installation
+  installation.
 - **Title standardization**: Sets consistent titles for Admin, Customer, and
-  Guest API schemas
+  Guest API schemas.
 - **Host normalization**: Sets a placeholder host (`example.com`) for
-  documentation purposes
+  documentation purposes.
 - **Introduction**: Adds a reference to shared documentation content in
-  `_includes/redocly-intro.md`
+  `_includes/redocly-intro.md`.
 
 ### Format conversion
 
 - **JSON to YAML**: Converts the final processed schemas from JSON to YAML
-  format for better readability and compatibility with documentation tools
+  format for better readability and compatibility with documentation tools.
 
 The transformation process ensures that the generated schemas are optimized
 for documentation generation while maintaining full API compatibility.
