@@ -90,6 +90,14 @@ The transformer applies several optimizations to make the OpenAPI schemas more s
 The transformation process ensures that the generated schemas are optimized
 for documentation generation while maintaining full API compatibility.
 
+### Examples
+
+To check examples of the different stages of transformation, see the following files:
+
+- [examples/paas-original-static.html](examples/paas-original-static.html) - representation of the original schema in static HTML.
+- [examples/paas-transformed-static.html](examples/paas-transformed-static.html) - representation after optimization for Redoc.
+- [examples/paas-edited-static.html](examples/paas-edited-static.html) - representation after metadata updates.
+
 ## Running tests
 
 This project uses [Jest][] for tests.
