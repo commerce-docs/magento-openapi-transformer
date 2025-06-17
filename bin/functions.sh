@@ -90,6 +90,8 @@ convert_accs () {
   ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < "$1" > "${1%.*}.yaml"
 
   echo 'Done'
+
+  echo "See the resulting schema in ${1%.*}.yaml"
 }
 
 # Edit ACCS schema metadata: add description
