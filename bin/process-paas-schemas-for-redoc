@@ -17,7 +17,10 @@ for file in "${files[@]}"; do
   fi
 done
 
+echo 'Checking if the required dependencies are installed...'
+check_dependencies
+
 echo 'Processing the schemas...'
-transform
-edit
-convert
+transform_paas
+edit_paas
+convert_paas

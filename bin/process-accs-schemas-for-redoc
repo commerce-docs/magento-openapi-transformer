@@ -1,0 +1,18 @@
+#!/bin/bash
+set -e
+
+source bin/functions.sh
+
+echo 'Checking if the required file exists...'
+if [ -z "$1" ]; then
+  echo "ERROR: Input schema file not provided. Usage: process-accs-schemas-for-redoc <input_schema_file>"
+  exit 1
+fi
+
+echo 'Checking if the required dependencies are installed...'
+check_dependencies
+
+echo 'Processing the schemas...'
+transform_accs "$1"
+edit_accs "${1%.*}_transformed.json"
+convert_accs "${1%.*}_transformed_edited.json"

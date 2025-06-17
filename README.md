@@ -15,7 +15,9 @@ A toolkit that gets, cleans up, updates, and converts a Commerce REST schema for
 yarn install
 ```
 
-## Configure variables
+## PaaS schemas
+
+### Configure variables
 
 Create a `.env` file:
 
@@ -25,7 +27,7 @@ cp .env.example .env
 
 Set values for your running Commerce app in `.env`.
 
-## Get, transform, and process the schema
+### Get, transform, and process the schema
 
 You can get all three original schemas and transform them in one run.
 Just make sure the Magento app is running.
@@ -38,7 +40,7 @@ bin/get-schemas-for-redoc
 
 Find the redoc-ready schemas in the `__output__` folder. For debugging, use the intermediate files in `__output__/artifacts`.
 
-### Only process the schema
+#### Only process the schema
 
 If you already have the following schemas locally:
 
@@ -51,6 +53,23 @@ then you can process them with:
 ```bash
 bin/process-schemas-for-redoc
 ```
+
+## ACCS schemas
+
+### Transform and convert the schema
+
+You can transform and convert the schema in one run.
+
+```bash
+bin/process-accs-schemas-for-redoc <input_schema_file>
+```
+
+For detail about applied transformations, see [Optimization for Redoc](#optimization-for-redoc).
+Also, a description is added to the schema metadata.
+
+> NOTE: The input schema file in JSON format is required.
+
+Find the redoc-ready schema in the same folder as the input schema file with the same name but with the `_transformed_edited` suffix and the `.yaml` extension.
 
 ## Schema transformations
 
