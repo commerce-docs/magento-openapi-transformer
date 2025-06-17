@@ -65,7 +65,11 @@ bin/process-accs-schemas-for-redoc <input_schema_file>
 ```
 
 For detail about applied transformations, see [Optimization for Redoc](#optimization-for-redoc).
-Also, a description is added to the schema metadata.
+Also, the following changes are made to the schema metadata:
+
+- Added description
+- Changed host to `https://<server>.api.commerce.adobe.com/<tenant-id>`
+- Changed basePath to `/`
 
 > NOTE: The input schema file in JSON format is required.
 
