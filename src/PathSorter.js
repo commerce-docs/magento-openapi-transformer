@@ -1,8 +1,11 @@
 /* Sorts a javascript object by its keys */
 
 function sortKeys(obj) {
-    var result = {};
+    if (obj === null || obj === undefined) {
+        return {};
+    }
 
+    var result = {};
     var keys = Object.keys(obj);
     keys.sort();
 

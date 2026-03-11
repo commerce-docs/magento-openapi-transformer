@@ -58,4 +58,4 @@ curl "$STORE_URL"/rest/default/schema > __output__/artifacts/guest-schema-origin
 # cat /var/www/html/commerce/var/log/exception.log
 
 # Process the schemas
-bin/process-schemas-for-redoc
+bin/process-paas-schemas-for-redoc
