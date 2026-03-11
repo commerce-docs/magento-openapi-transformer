@@ -24,3 +24,4 @@ echo 'Processing the schemas...'
 transform_paas
 edit_paas
 convert_paas
+compare_yaml_schemas
