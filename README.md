@@ -51,7 +51,7 @@ If you already have the following schemas locally:
 then you can process them with:
 
 ```bash
-bin/process-schemas-for-redoc
+bin/process-paas-schemas-for-redoc
 ```
 
 ## ACCS schemas
