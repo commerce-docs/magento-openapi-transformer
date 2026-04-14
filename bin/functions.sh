@@ -153,9 +153,11 @@ edit_accs () {
     exit 1
   fi
 
-  echo "Editing the ACCS schemas"
+  echo -e "Editing: version, title, intro, host\n"
 
-  ruby -rjson -e 's = JSON.load($stdin); s["host"]="https://<server>.api.commerce.adobe.com/<tenant-id>"; s["basePath"]="/"; s["info"].merge!({"description" => {"$ref" => "../_includes/accs-intro.md"}}); puts JSON.pretty_generate s' < "$1" > "${1%.*}_edited.json"
+  read -p 'Enter the release version (e.g., April 2026): ' VERSION
+
+  version=$VERSION ruby -rjson -e 's = JSON.load($stdin); s["info"]["title"]="Adobe Commerce as a Cloud Service"; s["info"]["version"]=ENV["version"]; s["host"]="https://<server>.api.commerce.adobe.com/<tenant-id>"; s["basePath"]="/"; s["info"].merge!({"description" => {"$ref" => "../_includes/accs-intro.md"}}); puts JSON.pretty_generate s' < "$1" > "${1%.*}_edited.json"
 
   echo 'Done'
 }
