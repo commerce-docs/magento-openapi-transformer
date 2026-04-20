@@ -10,9 +10,19 @@ convert_paas () {
     exit 1
   fi
 
-  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/artifacts/admin-schema-edited.json > __output__/admin-schema-$VERSION.yaml
-  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/artifacts/customer-schema-edited.json > __output__/customer-schema-$VERSION.yaml
-  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < __output__/artifacts/guest-schema-edited.json > __output__/guest-schema-$VERSION.yaml
+  _convert_schema() {
+    ruby -ryaml -rjson - "$1" > "$2" <<'RUBY'
+begin
+  puts JSON.parse(File.read(ARGV[0])).to_yaml
+rescue JSON::ParserError => e
+  abort "ERROR: Failed to parse JSON: #{e.message}"
+end
+RUBY
+  }
+
+  _convert_schema __output__/artifacts/admin-schema-edited.json    "__output__/admin-schema-$VERSION.yaml"
+  _convert_schema __output__/artifacts/customer-schema-edited.json "__output__/customer-schema-$VERSION.yaml"
+  _convert_schema __output__/artifacts/guest-schema-edited.json    "__output__/guest-schema-$VERSION.yaml"
 }
 
 # Compare YAML schema outputs and report to console
@@ -72,9 +82,34 @@ edit_paas () {
 
   read -p 'Enter your Magento version (e.g, 2.4.6): ' VERSION
 
-  version=$VERSION ruby -rjson -e 's = JSON.load($stdin) || {}; s["info"] ||= {}; s["info"]["version"]=ENV["version"]; s["info"]["title"]="Commerce Admin REST endpoints - All inclusive"; s["info"].merge!({"description" => {"$ref" => "../_includes/redocly-intro.md"}}); s["host"]="example.com"; s["basePath"]="/"+((s["basePath"]||"/").to_s.sub(/\A\/+/, "")); puts JSON.pretty_generate s' < __output__/artifacts/admin-schema-transformed.json > __output__/artifacts/admin-schema-edited.json
-  version=$VERSION ruby -rjson -e 's = JSON.load($stdin) || {}; s["info"] ||= {}; s["info"]["version"]=ENV["version"]; s["info"]["title"]="Commerce Customer REST endpoints - All inclusive"; s["host"]="example.com"; s["info"].merge!({"description" => {"$ref" => "../_includes/redocly-intro.md"}}); s["basePath"]="/"+((s["basePath"]||"/").to_s.sub(/\A\/+/, "")); puts JSON.pretty_generate s' < __output__/artifacts/customer-schema-transformed.json > __output__/artifacts/customer-schema-edited.json
-  version=$VERSION ruby -rjson -e 's = JSON.load($stdin) || {}; s["info"] ||= {}; s["info"]["version"]=ENV["version"]; s["info"]["title"]="Commerce Guest REST endpoints - All inclusive"; s["info"].merge!({"description" => {"$ref" => "../_includes/redocly-intro.md"}}); s["host"]="example.com"; s["basePath"]="/"+((s["basePath"]||"/").to_s.sub(/\A\/+/, "")); puts JSON.pretty_generate s' < __output__/artifacts/guest-schema-transformed.json > __output__/artifacts/guest-schema-edited.json
+  _edit_schema() {
+    title="$1" version=$VERSION ruby -rjson - "$2" > "$3" <<'RUBY'
+begin
+  s = JSON.load(File.read(ARGV[0]))
+rescue JSON::ParserError => e
+  abort "ERROR: Failed to parse JSON: #{e.message}"
+end
+abort "ERROR: Input JSON is missing required 'info' key" unless s.is_a?(Hash) && s['info'].is_a?(Hash)
+s['info']['version'] = ENV['version']
+s['info']['title'] = ENV['title']
+s['info'].merge!('description' => { '$ref' => '../_includes/redocly-intro.md' })
+s['host'] = 'example.com'
+s['basePath'] = '/' + (s['basePath'] || '/').to_s.sub(/\A\/+/, '')
+puts JSON.pretty_generate(s)
+RUBY
+  }
+
+  _edit_schema "Commerce Admin REST endpoints - All inclusive" \
+    __output__/artifacts/admin-schema-transformed.json \
+    __output__/artifacts/admin-schema-edited.json
+
+  _edit_schema "Commerce Customer REST endpoints - All inclusive" \
+    __output__/artifacts/customer-schema-transformed.json \
+    __output__/artifacts/customer-schema-edited.json
+
+  _edit_schema "Commerce Guest REST endpoints - All inclusive" \
+    __output__/artifacts/guest-schema-transformed.json \
+    __output__/artifacts/guest-schema-edited.json
 
   echo 'Done'
 }
@@ -133,17 +168,31 @@ convert_accs () {
     exit 1
   fi
 
+  if [ ! -f "$1" ]; then
+    echo "ERROR: File not found: $1"
+    exit 1
+  fi
+
   echo "Converting the ACCS schemas to YAML"
 
-  ruby -ryaml -rjson -e 'puts JSON.parse(ARGF.read).to_yaml' < "$1" > "${1%.*}.yaml"
+  ruby -ryaml -rjson - "$1" > "${1%.*}.yaml" <<'RUBY'
+begin
+  puts JSON.parse(File.read(ARGV[0])).to_yaml
+rescue JSON::ParserError => e
+  abort "ERROR: Failed to parse JSON: #{e.message}"
+end
+RUBY
 
   echo 'Done'
 
   echo "See the resulting schema in ${1%.*}.yaml"
 }
 
-# Edit ACCS schema metadata: add description
+# Edit ACCS schema metadata including version, title, intro, and host
+# Prompts for release version (e.g., April 2026)
 # Required: ruby with json gem
+# Note: injects a $ref to ../_includes/accs-intro.md — this file must exist
+#   relative to the schema location in the parent docs repository
 # Parameters:
 #   $1 - Input JSON file path
 # Output: Edited JSON file with _edited suffix
@@ -153,9 +202,29 @@ edit_accs () {
     exit 1
   fi
 
-  echo "Editing the ACCS schemas"
+  if [ ! -f "$1" ]; then
+    echo "ERROR: File not found: $1"
+    exit 1
+  fi
 
-  ruby -rjson -e 's = JSON.load($stdin); s["host"]="https://<server>.api.commerce.adobe.com/<tenant-id>"; s["basePath"]="/"; s["info"]["description"]="The schemas documented here are autogenerated from an instance of Adobe Commerce as a Cloud Service."; puts JSON.pretty_generate s' < "$1" > "${1%.*}_edited.json"
+  echo -e "Editing: version, title, intro, host\n"
+
+  read -p 'Enter the release version (e.g., April 2026): ' VERSION
+
+  version=$VERSION ruby -rjson - "$1" > "${1%.*}_edited.json" <<'RUBY'
+begin
+  s = JSON.load(File.read(ARGV[0]))
+rescue JSON::ParserError => e
+  abort "ERROR: Failed to parse JSON: #{e.message}"
+end
+abort "ERROR: Input JSON is missing required 'info' key" unless s.is_a?(Hash) && s['info'].is_a?(Hash)
+s['info']['title'] = 'Adobe Commerce as a Cloud Service'
+s['info']['version'] = ENV['version']
+s['host'] = 'https://<server>.api.commerce.adobe.com/<tenant-id>'
+s['basePath'] = '/'
+s['info'].merge!('description' => { '$ref' => '../_includes/accs-intro.md' })
+puts JSON.pretty_generate(s)
+RUBY
 
   echo 'Done'
 }

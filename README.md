@@ -67,11 +67,13 @@ bin/process-accs-schemas-for-redoc <input_schema_file>
 For detail about applied transformations, see [Optimization for Redoc](#optimization-for-redoc).
 Also, the following changes are made to the schema metadata:
 
-- Added description
+- Set title to `Adobe Commerce as a Cloud Service`
+- Set version (prompted during the run)
+- Added intro description via `$ref` to `../_includes/accs-intro.md`
 - Changed host to `https://<server>.api.commerce.adobe.com/<tenant-id>`
 - Changed basePath to `/`
 
-> NOTE: The input schema file in JSON format is required.
+> NOTE: The input schema file in JSON format is required. Be ready to enter a release version (e.g., April 2026).
 
 Find the redoc-ready schema in the same folder as the input schema file with the same name but with the `_transformed_edited` suffix and the `.yaml` extension.
 
