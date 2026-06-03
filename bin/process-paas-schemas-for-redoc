@@ -4,10 +4,11 @@ set -e
 source bin/functions.sh
 
 echo 'Checking if all required files exist...'
+artifacts_dir="${ARTIFACTS_DIR:-__output__/artifacts}"
 files=(
-  "__output__/artifacts/admin-schema-original.json"
-  "__output__/artifacts/customer-schema-original.json"
-  "__output__/artifacts/guest-schema-original.json"
+  "${artifacts_dir}/admin-schema-original.json"
+  "${artifacts_dir}/customer-schema-original.json"
+  "${artifacts_dir}/guest-schema-original.json"
 )
 
 for file in "${files[@]}"; do

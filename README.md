@@ -69,7 +69,7 @@ Also, the following changes are made to the schema metadata:
 
 - Set title to `Adobe Commerce as a Cloud Service`
 - Set version (prompted during the run)
-- Added intro description via `$ref` to `../_includes/accs-intro.md`
+- Added intro description via `$ref` to `intro/accs-intro.md`
 - Changed host to `https://<server>.api.commerce.adobe.com/<tenant-id>`
 - Changed basePath to `/`
 
