@@ -1,14 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 
 # Convert JSON schemas to YAML format
 # Required: VERSION environment variable
-# Input: JSON files from __output__/artifacts/
-# Output: YAML files in __output__/ with version in filename
+# Input: JSON files from ARTIFACTS_DIR (default: __output__/artifacts/)
+# Output: YAML files in OUTPUT_DIR (default: __output__/) with version in filename
 convert_paas () {
   if [ -z "$VERSION" ]; then
     echo "ERROR: VERSION is not set. Exiting."
     exit 1
   fi
+
+  local artifacts_dir="${ARTIFACTS_DIR:-__output__/artifacts}"
+  local output_dir="${OUTPUT_DIR:-__output__}"
 
   _convert_schema() {
     ruby -ryaml -rjson - "$1" > "$2" <<'RUBY'
@@ -20,9 +23,9 @@ end
 RUBY
   }
 
-  _convert_schema __output__/artifacts/admin-schema-edited.json    "__output__/admin-schema-$VERSION.yaml"
-  _convert_schema __output__/artifacts/customer-schema-edited.json "__output__/customer-schema-$VERSION.yaml"
-  _convert_schema __output__/artifacts/guest-schema-edited.json    "__output__/guest-schema-$VERSION.yaml"
+  _convert_schema "${artifacts_dir}/admin-schema-edited.json"    "${output_dir}/admin-schema-$VERSION.yaml"
+  _convert_schema "${artifacts_dir}/customer-schema-edited.json" "${output_dir}/customer-schema-$VERSION.yaml"
+  _convert_schema "${artifacts_dir}/guest-schema-edited.json"    "${output_dir}/guest-schema-$VERSION.yaml"
 }
 
 # Compare YAML schema outputs and report to console
@@ -34,7 +37,7 @@ compare_yaml_schemas () {
     return 1
   fi
 
-  local out_dir="${1:-__output__}"
+  local out_dir="${1:-${OUTPUT_DIR:-__output__}}"
   local admin="$out_dir/admin-schema-$VERSION.yaml"
   local customer="$out_dir/customer-schema-$VERSION.yaml"
   local guest="$out_dir/guest-schema-$VERSION.yaml"
@@ -80,7 +83,9 @@ compare_yaml_schemas () {
 edit_paas () {
   echo -e "Editing: version, title, intro, host\n"
 
-  read -p 'Enter your Magento version (e.g, 2.4.6): ' VERSION
+  if [ -z "$VERSION" ]; then
+    read -rp 'Enter your Magento version (e.g, 2.4.6): ' VERSION
+  fi
 
   _edit_schema() {
     title="$1" version=$VERSION ruby -rjson - "$2" > "$3" <<'RUBY'
@@ -92,24 +97,26 @@ end
 abort "ERROR: Input JSON is missing required 'info' key" unless s.is_a?(Hash) && s['info'].is_a?(Hash)
 s['info']['version'] = ENV['version']
 s['info']['title'] = ENV['title']
-s['info'].merge!('description' => { '$ref' => '../_includes/redocly-intro.md' })
+s['info'].merge!('description' => { '$ref' => 'intro/redocly-intro.md' })
 s['host'] = 'example.com'
 s['basePath'] = '/' + (s['basePath'] || '/').to_s.sub(/\A\/+/, '')
 puts JSON.pretty_generate(s)
 RUBY
   }
 
+  local artifacts_dir="${ARTIFACTS_DIR:-__output__/artifacts}"
+
   _edit_schema "Commerce Admin REST endpoints - All inclusive" \
-    __output__/artifacts/admin-schema-transformed.json \
-    __output__/artifacts/admin-schema-edited.json
+    "${artifacts_dir}/admin-schema-transformed.json" \
+    "${artifacts_dir}/admin-schema-edited.json"
 
   _edit_schema "Commerce Customer REST endpoints - All inclusive" \
-    __output__/artifacts/customer-schema-transformed.json \
-    __output__/artifacts/customer-schema-edited.json
+    "${artifacts_dir}/customer-schema-transformed.json" \
+    "${artifacts_dir}/customer-schema-edited.json"
 
   _edit_schema "Commerce Guest REST endpoints - All inclusive" \
-    __output__/artifacts/guest-schema-transformed.json \
-    __output__/artifacts/guest-schema-edited.json
+    "${artifacts_dir}/guest-schema-transformed.json" \
+    "${artifacts_dir}/guest-schema-edited.json"
 
   echo 'Done'
 }
@@ -125,18 +132,18 @@ get_customer_creds () {
 
 # Transform PaaS schemas for Redocly
 # Required: yarn and Node.js
-# Input: Original JSON files from __output__/artifacts/
-# Output: Transformed JSON files in __output__/artifacts/
+# Input: Original JSON files from ARTIFACTS_DIR (default: __output__/artifacts/)
+# Output: Transformed JSON files in ARTIFACTS_DIR
 transform_paas () {
   echo "Transforming the PaaS schemas for Redocly"
 
+  local artifacts_dir="${ARTIFACTS_DIR:-__output__/artifacts}"
+
   yarn install
 
-  yarn start -i __output__/artifacts/guest-schema-original.json -o __output__/artifacts/guest-schema-transformed.json
-
-  yarn start -i __output__/artifacts/admin-schema-original.json -o __output__/artifacts/admin-schema-transformed.json
-
-  yarn start -i __output__/artifacts/customer-schema-original.json -o __output__/artifacts/customer-schema-transformed.json
+  yarn start -i "${artifacts_dir}/guest-schema-original.json"    -o "${artifacts_dir}/guest-schema-transformed.json"
+  yarn start -i "${artifacts_dir}/admin-schema-original.json"    -o "${artifacts_dir}/admin-schema-transformed.json"
+  yarn start -i "${artifacts_dir}/customer-schema-original.json" -o "${artifacts_dir}/customer-schema-transformed.json"
 }
 
 # Transform ACCS schema for Redocly
@@ -191,7 +198,7 @@ RUBY
 # Edit ACCS schema metadata including version, title, intro, and host
 # Prompts for release version (e.g., April 2026)
 # Required: ruby with json gem
-# Note: injects a $ref to ../_includes/accs-intro.md — this file must exist
+# Note: injects a $ref to intro/accs-intro.md — this file must exist
 #   relative to the schema location in the parent docs repository
 # Parameters:
 #   $1 - Input JSON file path
@@ -209,7 +216,9 @@ edit_accs () {
 
   echo -e "Editing: version, title, intro, host\n"
 
-  read -p 'Enter the release version (e.g., April 2026): ' VERSION
+  if [ -z "$VERSION" ]; then
+    read -rp 'Enter the release version (e.g., April 2026): ' VERSION
+  fi
 
   version=$VERSION ruby -rjson - "$1" > "${1%.*}_edited.json" <<'RUBY'
 begin
@@ -222,7 +231,7 @@ s['info']['title'] = 'Adobe Commerce as a Cloud Service'
 s['info']['version'] = ENV['version']
 s['host'] = 'https://<server>.api.commerce.adobe.com/<tenant-id>'
 s['basePath'] = '/'
-s['info'].merge!('description' => { '$ref' => '../_includes/accs-intro.md' })
+s['info'].merge!('description' => { '$ref' => 'intro/accs-intro.md' })
 puts JSON.pretty_generate(s)
 RUBY
 
